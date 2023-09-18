@@ -1,0 +1,31 @@
+<head th:fragment="head">
+  <title th:text="${pageTitle} ? ${pageTitle} + ' - eRegistrar' : 'eRegistrar'"></title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon shortcut-icon" href="/logo.jpg" type="image/jpg"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+  <style>
+    body {
+      padding-top: 5rem;
+    }
+    .welcome {
+      padding: 3rem 1.5rem;
+      text-align: center;
+    }
+    .footer{
+      width: calc(100vw - 30px);
+      text-align: center;
+      position: absolute;
+      bottom: 0;
+    }
+    .table-bordered {
+      border-top-right-radius: 15px;
+      border-top-left-radius: 15px;
+    }
+    .welcome-logo{
+      width:auto;
+      height:250px;
+    }
+  </style>
+</head>

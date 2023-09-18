@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}"> </head>
+<body>
+<div class="container">
+  <nav th:replace="~{fragments/header :: header}"></nav>
+  <main role="main">
+    <div class="welcome">
+      <img src="/logo.jpg" class="img-fluid welcome-logo" alt="logo"/>
+      <h1>eRegistrar!</h1>
+      <p class="lead"></p>
+    </div>
+  </main>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

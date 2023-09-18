@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}"> </head>
+<body>
+<div class="container-fluid">
+  <nav th:replace="~{fragments/header :: header}"></nav>
+  <div class="row">
+    <div class="col-12 col-sm-12 col-md-2 col-lg-2 col-xl-2 mb-3 text-left">
+      <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#addStudentModal"><i class="fa fa-plus"></i>&nbsp;Add Student</button>
+    </div>
+  </div>
+  <main role="main" class="table-responsive">
+    <table class="table table-bordered table-striped">
+      <thead class="table-info">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Student Number</th>
+        <th scope="col">Name</th>
+        <th scope="col">CGPA</th>
+        <th scope="col">Enrollment Date</th>
+        <th scope="col">Is International</th>
+        <th scope="col">Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="student : ${students}" th:id="'StudentRow_' ${student.getStudentId()}">
+        <th scope="row" th:text="${student.getStudentId()}"></th>
+        <td th:text="${student.getStudentNumber()}"></td>
+        <td th:text="${student.getFirstName()} + (${!student.getMiddleName().isEmpty()} ? ' ' + ${student.getMiddleName()} : '') + ' ' + ${student.getLastName()}"></td>
+        <td th:text="${student.getCgpa()}"></td>
+        <td th:text="${student.getEnrollmentDate()}"></td>
+        <td th:text="${student.getIsInternational()}"></td>
+        <td>
+          <a th:onclick="'showUpdateStudentForm(' + ${student.getStudentId()} + ');'" class="btn btn-primary"><i class="fa fa-edit"></i></a>&nbsp;
+          <a th:onclick="'deleteStudent(' + ${student.getStudentId()} + ');'" target="_blank" class="btn btn-danger"><i class="fa fa-trash"></i></a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </main>
+
+  <div class="modal fade" id="addStudentModal" tabindex="-1" role="dialog" aria-labelledby="Add New Student" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <form id="addStudentForm">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addStudentTitle">Add New Student</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+              <div class="form-row">
+                <div class="form-group col-md-12">
+                  <label for="studentNumber">Student Number</label>
+                  <input type="text" class="form-control" id="studentNumber" name="studentNumber" placeholder="000-61-0001" required />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-4">
+                  <label for="firstName">First Name</label>
+                  <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Anna" required />
+                </div>
+                <div class="form-group col-md-4">
+                  <label for="middleName">Middle Name</label>
+                  <input type="text" class="form-control" id="middleName" name="middleName" placeholder="" />
+                </div>
+                <div class="form-group col-md-4">
+                  <label for="lastName">last Name</label>
+                  <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Smith" required />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-4">
+                  <label for="cgpa">CGPA</label>
+                  <input type="number" class="form-control" id="cgpa" name="cgpa" value="0.00" step=".01" min="0.00" max="4.00" />
+                </div>
+                <div class="form-group col-md-4">
+                  <label for="enrollmentDate">Enrollment Date</label>
+                  <input type="date" class="form-control" id="enrollmentDate" name="enrollmentDate" required />
+                </div>
+                <div class="form-group col-md-4">
+                  <label for="isInternational">Is International?</label>
+                  <select id="isInternational" class="form-control" name="isInternational" required>
+                    <option value="" selected>Choose...</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" onClick="event.preventDefault(); addStudent();">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="updateStudentModal" tabindex="-1" role="dialog" aria-labelledby="Update Student" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <form id="updateStudentForm">
+          <div class="modal-header">
+            <h5 class="modal-title" id="updateStudentTitle">Update <span id="updateStudentTitleSpan">Student</span></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-row">
+              <div class="form-group col-md-12">
+                <label for="studentNumberEdit">Student Number</label>
+                <input type="hidden" id="studentIdEdit" name="studentId" value="" required />
+                <input type="text" class="form-control" id="studentNumberEdit" name="studentNumber" placeholder="000-61-0001" required />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="firstNameEdit">First Name</label>
+                <input type="text" class="form-control" id="firstNameEdit" name="firstName" placeholder="Anna" required />
+              </div>
+              <div class="form-group col-md-4">
+                <label for="middleNameEdit">Middle Name</label>
+                <input type="text" class="form-control" id="middleNameEdit" name="middleName" placeholder="" />
+              </div>
+              <div class="form-group col-md-4">
+                <label for="lastNameEdit">First Name</label>
+                <input type="text" class="form-control" id="lastNameEdit" name="lastName" placeholder="Smith" required />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="cgpaEdit">CGPA</label>
+                <input type="number" class="form-control" id="cgpaEdit" name="cgpa" value="0.00" step=".01" min="0.00" max="4.00" />
+              </div>
+              <div class="form-group col-md-4">
+                <label for="enrollmentDateEdit">Enrollment Date</label>
+                <input type="date" class="form-control" id="enrollmentDateEdit" name="enrollmentDate" required />
+              </div>
+              <div class="form-group col-md-4">
+                <label for="isInternationalEdit">Is International?</label>
+                <select id="isInternationalEdit" class="form-control" name="isInternational" required>
+                  <option value="" selected>Choose...</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" onClick="event.preventDefault(); updateStudent();">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>
